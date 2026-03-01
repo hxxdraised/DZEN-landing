@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Cormorant_Garamond } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { siteConfig } from "@/data/mock";
@@ -7,6 +7,13 @@ import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
+  variable: "--font-inter",
+});
+
+const cormorant = Cormorant_Garamond({
+  weight: ["300", "400", "600", "700"],
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-cormorant",
 });
 
 export const metadata: Metadata = {
@@ -24,9 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={`${inter.className} antialiased`}>
+      <body
+        className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
+      >
         <Header />
-        <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+        <main>{children}</main>
         <Footer />
       </body>
     </html>

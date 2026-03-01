@@ -8,6 +8,7 @@ export interface HeroData {
   subtitle: string;
   ctaText: string;
   ctaHref: string;
+  highlights: string[];
 }
 
 export interface Feature {
@@ -65,8 +66,13 @@ export const heroData: HeroData = {
   title: "Найдите свой путь к гармонии",
   subtitle:
     "DZEN — это пространство, где технологии встречаются с осознанностью. Мы помогаем вам достичь баланса в цифровом мире.",
-  ctaText: "Узнать больше",
-  ctaHref: "/about",
+  ctaText: "Записаться",
+  ctaHref: "/contacts",
+  highlights: [
+    "Осознанный подход",
+    "Продуманные программы",
+    "Индивидуальный путь",
+  ],
 };
 
 export const featuresData: Feature[] = [

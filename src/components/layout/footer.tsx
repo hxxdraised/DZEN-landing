@@ -75,16 +75,36 @@ export function Footer() {
                 <PhoneIcon className="size-4 shrink-0 text-primary/60" />
                 {contactData.phone}
               </a>
-              <a
-                href={`mailto:${contactData.email}`}
-                className="flex items-center gap-2 text-sm text-muted-foreground transition-colors duration-200 hover:text-primary"
-              >
-                <MailIcon className="size-4 shrink-0 text-primary/60" />
-                {contactData.email}
-              </a>
+              {contactData.email ? (
+                <a
+                  href={`mailto:${contactData.email}`}
+                  className="flex items-center gap-2 text-sm text-muted-foreground transition-colors duration-200 hover:text-primary"
+                >
+                  <MailIcon className="size-4 shrink-0 text-primary/60" />
+                  {contactData.email}
+                </a>
+              ) : null}
               <div className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPinIcon className="mt-0.5 size-4 shrink-0 text-primary/60" />
                 {contactData.address}
+              </div>
+              <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                <a href={contactData.social.instagram} target="_blank" rel="noreferrer">
+                  Instagram
+                </a>
+                <a href={contactData.social.whatsapp} target="_blank" rel="noreferrer">
+                  WhatsApp
+                </a>
+                <a href={contactData.social.telegram} target="_blank" rel="noreferrer">
+                  Telegram
+                </a>
+                <a
+                  href={contactData.social.telegramChannel}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Telegram-канал
+                </a>
               </div>
             </div>
           </div>

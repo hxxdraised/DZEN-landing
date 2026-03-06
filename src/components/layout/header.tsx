@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { MenuIcon, XIcon, PhoneIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { siteConfig, contactData } from "@/data/mock";
+import { siteConfig, contactData, socialLinks } from "@/data/mock";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -70,6 +70,22 @@ export function Header() {
 
         {/* Desktop right side */}
         <div className="hidden items-center gap-4 md:flex">
+          <a
+            href={socialLinks.telegram}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-foreground/70 transition-colors duration-200 hover:text-primary"
+          >
+            Telegram
+          </a>
+          <a
+            href={socialLinks.whatsapp}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-foreground/70 transition-colors duration-200 hover:text-primary"
+          >
+            WhatsApp
+          </a>
           <a
             href={`tel:${contactData.phone.replace(/\D/g, "")}`}
             className="flex items-center gap-1.5 text-sm text-foreground/70 transition-colors duration-200 hover:text-primary"
@@ -162,6 +178,14 @@ export function Header() {
                 >
                   {contactData.phone}
                 </a>
+                <div className="flex items-center gap-3 text-sm text-foreground/70">
+                  <a href={socialLinks.telegram} target="_blank" rel="noreferrer">
+                    Telegram
+                  </a>
+                  <a href={socialLinks.whatsapp} target="_blank" rel="noreferrer">
+                    WhatsApp
+                  </a>
+                </div>
                 <Button asChild size="lg" onClick={() => setMobileOpen(false)}>
                   <Link href="/contacts">Записаться</Link>
                 </Button>

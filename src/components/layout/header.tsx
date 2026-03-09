@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MenuIcon, XIcon, PhoneIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { siteConfig, contactData, socialLinks } from "@/data/mock";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,7 @@ export function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -39,11 +41,15 @@ export function Header() {
     };
   }, [mobileOpen]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled
+        scrolled && !mobileOpen
           ? "bg-background/95 backdrop-blur-md shadow-sm"
           : "bg-transparent"
       )}
@@ -145,69 +151,73 @@ export function Header() {
         </button>
       </div>
 
-      {/* Mobile overlay */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-background/98 backdrop-blur-sm md:hidden"
-          >
-            <nav className="flex h-full flex-col items-center justify-center gap-6">
-              {siteConfig.navigation.map((item, i) => (
+      {mounted
+        ? createPortal(
+            <AnimatePresence>
+              {mobileOpen && (
                 <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.05 * i, duration: 0.3 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="fixed inset-0 z-40 bg-background/98 backdrop-blur-sm md:hidden"
                 >
-                  <Link
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "font-display text-3xl font-light tracking-wide transition-colors duration-200",
-                      pathname === item.href
-                        ? "text-primary"
-                        : "text-foreground/70 hover:text-primary"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
+                  <nav className="flex h-full flex-col items-center justify-center gap-6">
+                    {siteConfig.navigation.map((item, i) => (
+                      <motion.div
+                        key={item.href}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.05 * i, duration: 0.3 }}
+                      >
+                        <Link
+                          href={item.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={cn(
+                            "font-display text-3xl font-light tracking-wide transition-colors duration-200",
+                            pathname === item.href
+                              ? "text-primary"
+                              : "text-foreground/70 hover:text-primary"
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      </motion.div>
+                    ))}
+                    <motion.div
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        delay: 0.05 * siteConfig.navigation.length,
+                        duration: 0.3,
+                      }}
+                      className="mt-4 flex flex-col items-center gap-4"
+                    >
+                      <a
+                        href={`tel:${contactData.phone.replace(/\D/g, "")}`}
+                        className="text-sm text-foreground/70 transition-colors hover:text-primary"
+                      >
+                        {contactData.phone}
+                      </a>
+                      <div className="flex items-center gap-3 text-sm text-foreground/70">
+                        <a href={socialLinks.telegram} target="_blank" rel="noreferrer">
+                          Telegram
+                        </a>
+                        <a href={socialLinks.whatsapp} target="_blank" rel="noreferrer">
+                          WhatsApp
+                        </a>
+                      </div>
+                      <Button asChild size="lg" onClick={() => setMobileOpen(false)}>
+                        <Link href="/contacts">Записаться</Link>
+                      </Button>
+                    </motion.div>
+                  </nav>
                 </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.05 * siteConfig.navigation.length,
-                  duration: 0.3,
-                }}
-                className="mt-4 flex flex-col items-center gap-4"
-              >
-                <a
-                  href={`tel:${contactData.phone.replace(/\D/g, "")}`}
-                  className="text-sm text-foreground/70 transition-colors hover:text-primary"
-                >
-                  {contactData.phone}
-                </a>
-                <div className="flex items-center gap-3 text-sm text-foreground/70">
-                  <a href={socialLinks.telegram} target="_blank" rel="noreferrer">
-                    Telegram
-                  </a>
-                  <a href={socialLinks.whatsapp} target="_blank" rel="noreferrer">
-                    WhatsApp
-                  </a>
-                </div>
-                <Button asChild size="lg" onClick={() => setMobileOpen(false)}>
-                  <Link href="/contacts">Записаться</Link>
-                </Button>
-              </motion.div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              )}
+            </AnimatePresence>,
+            document.body
+          )
+        : null}
     </header>
   );
 }

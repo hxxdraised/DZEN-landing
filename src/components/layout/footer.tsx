@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MailIcon, PhoneIcon, MapPinIcon, ArrowUpIcon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { LeadButton } from "@/components/lead/lead-button";
 import { siteConfig, contactData } from "@/data/mock";
 
 export function Footer() {
@@ -26,13 +27,9 @@ export function Footer() {
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
               {siteConfig.description}
             </p>
-            <Button
-              asChild
-              size="sm"
-              className="mt-2 w-fit"
-            >
-              <Link href="/contacts">Записаться</Link>
-            </Button>
+            <LeadButton source="Футер" size="sm" className="mt-2 w-fit">
+              Записаться
+            </LeadButton>
           </div>
 
           {/* Navigation column */}

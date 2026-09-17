@@ -1,5 +1,6 @@
 import { MailIcon, PhoneIcon, MapPinIcon } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { LeadButton } from "@/components/lead/lead-button";
 import type { ContactInfo } from "@/data/mock";
 
 interface ContactInfoProps {
@@ -95,6 +96,13 @@ export function ContactInfoSection({ data }: ContactInfoProps) {
             </CardDescription>
           </CardHeader>
         </Card>
+      </div>
+
+      <div className="mt-10 flex flex-col items-center gap-3">
+        <p className="text-sm text-muted-foreground">
+          Новичок в студии? Оставьте заявку — администратор свяжется с вами.
+        </p>
+        <LeadButton source="Страница контактов" label="Оставить заявку" size="lg" />
       </div>
     </section>
   );

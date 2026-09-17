@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LeadButton } from "@/components/lead/lead-button";
 import { ScheduleView } from "@/components/schedule/schedule-view";
 import {
   addDays,
@@ -97,9 +98,7 @@ export default async function SchedulePage({
           Живое расписание студии — данные обновляются из системы записи каждые пару минут.
         </p>
         <div className="mt-6 flex justify-center">
-          <Button asChild size="lg">
-            <Link href="/contacts">Записаться на занятие</Link>
-          </Button>
+          <LeadButton source="Расписание" label="Записаться на занятие" size="lg" />
         </div>
       </div>
 

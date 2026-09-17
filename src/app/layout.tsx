@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { LeadProvider } from "@/components/lead/lead-provider";
 import { siteConfig } from "@/data/mock";
 import "./globals.css";
 
@@ -34,9 +35,11 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
       >
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <LeadProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </LeadProvider>
       </body>
     </html>
   );

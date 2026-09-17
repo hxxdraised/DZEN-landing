@@ -7,11 +7,13 @@ import { MenuIcon, XIcon, PhoneIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
+import { useLead } from "@/components/lead/lead-provider";
 import { siteConfig, contactData, socialLinks } from "@/data/mock";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const pathname = usePathname();
+  const { open: openLead } = useLead();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const mounted = useSyncExternalStore(
@@ -115,8 +117,8 @@ export function Header() {
             <PhoneIcon className="size-3.5" />
             {contactData.phone}
           </a>
-          <Button asChild size="sm">
-            <Link href="/contacts">Записаться</Link>
+          <Button size="sm" onClick={() => openLead("Шапка сайта")}>
+            Записаться
           </Button>
         </div>
 
@@ -209,8 +211,14 @@ export function Header() {
                           WhatsApp
                         </a>
                       </div>
-                      <Button asChild size="lg" onClick={() => setMobileOpen(false)}>
-                        <Link href="/contacts">Записаться</Link>
+                      <Button
+                        size="lg"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          openLead("Мобильное меню");
+                        }}
+                      >
+                        Записаться
                       </Button>
                     </motion.div>
                   </nav>

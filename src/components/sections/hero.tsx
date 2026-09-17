@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useLead } from "@/components/lead/lead-provider";
 import type { HeroData } from "@/data/mock";
 
 interface HeroProps {
@@ -25,6 +25,7 @@ const fadeUp = {
 };
 
 export function Hero({ data }: HeroProps) {
+  const { open: openLead } = useLead();
   return (
     <section className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden px-4 pt-[72px]">
       {/* Subtle decorative circle */}
@@ -70,8 +71,8 @@ export function Hero({ data }: HeroProps) {
 
         {/* CTA button */}
         <motion.div variants={fadeUp} className="mt-10">
-          <Button asChild size="lg">
-            <Link href={data.ctaHref}>{data.ctaText}</Link>
+          <Button size="lg" onClick={() => openLead(data.ctaText)}>
+            {data.ctaText}
           </Button>
         </motion.div>
       </motion.div>

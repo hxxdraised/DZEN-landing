@@ -54,7 +54,7 @@ export const CONTENT_TAGS = {
 
 let contentTablesEnsured: Promise<void> | null = null;
 
-function ensureTables(): Promise<void> {
+export function ensureTables(): Promise<void> {
   contentTablesEnsured ??= (async () => {
     await query(`
       CREATE TABLE IF NOT EXISTS direction_categories (
@@ -254,6 +254,92 @@ export const getPricing = unstable_cache(fetchPricing, ["content-pricing"], {
   tags: [CONTENT_TAGS.pricing],
   revalidate: 3600,
 });
+
+export interface AdminDirection {
+  id: number;
+  title: string;
+  description: string;
+  photoUrl: string | null;
+  sortOrder: number;
+  visible: boolean;
+}
+
+export interface AdminDirectionCategory {
+  id: number;
+  title: string;
+  sortOrder: number;
+  visible: boolean;
+  directions: AdminDirection[];
+}
+
+export async function getDirectionsAdmin(): Promise<AdminDirectionCategory[]> {
+  await ensureTables();
+  const categories = await query<{
+    id: string;
+    title: string;
+    sort_order: number;
+    visible: boolean;
+  }>(
+    "SELECT id, title, sort_order, visible FROM direction_categories ORDER BY sort_order, id"
+  );
+  const directions = await query<{
+    id: string;
+    category_id: string;
+    title: string;
+    description: string;
+    photo_url: string | null;
+    sort_order: number;
+    visible: boolean;
+  }>(
+    `SELECT id, category_id, title, description, photo_url, sort_order, visible
+     FROM directions ORDER BY sort_order, id`
+  );
+
+  return categories.rows.map((c) => ({
+    id: Number(c.id),
+    title: c.title,
+    sortOrder: c.sort_order,
+    visible: c.visible,
+    directions: directions.rows
+      .filter((d) => d.category_id === c.id)
+      .map((d) => ({
+        id: Number(d.id),
+        title: d.title,
+        description: d.description,
+        photoUrl: d.photo_url,
+        sortOrder: d.sort_order,
+        visible: d.visible,
+      })),
+  }));
+}
+
+export async function moveEntity(
+  table: "direction_categories" | "directions",
+  id: number,
+  direction: "up" | "down"
+): Promise<void> {
+  await ensureTables();
+  const ordered = await query<{ id: string; sort_order: number }>(
+    `SELECT id, sort_order FROM ${table} ORDER BY sort_order, id`
+  );
+  const rows = ordered.rows.map((r) => ({ id: Number(r.id), sortOrder: r.sort_order }));
+  const index = rows.findIndex((r) => r.id === id);
+  if (index === -1) return;
+  const target = direction === "up" ? index - 1 : index + 1;
+  if (target < 0 || target >= rows.length) return;
+
+  for (const [i, row] of rows.entries()) {
+    if (row.sortOrder !== i) {
+      await query(`UPDATE ${table} SET sort_order = $1 WHERE id = $2`, [i, row.id]);
+      rows[i].sortOrder = i;
+    }
+  }
+
+  const a = rows[index];
+  const b = rows[target];
+  await query(`UPDATE ${table} SET sort_order = $1 WHERE id = $2`, [b.sortOrder, a.id]);
+  await query(`UPDATE ${table} SET sort_order = $1 WHERE id = $2`, [a.sortOrder, b.id]);
+}
 
 export function formatPrice(value: number): string {
   return `${new Intl.NumberFormat("ru-RU").format(value)} ₽`;

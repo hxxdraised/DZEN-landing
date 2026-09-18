@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Дашборд" },
+  { href: "/admin/content/directions", label: "Направления" },
   { href: "/admin/integrations/listok", label: "Listok" },
   { href: "/admin/integrations/telegram", label: "Telegram" },
 ];

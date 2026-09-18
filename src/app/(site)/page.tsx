@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Hero } from "@/components/sections/hero";
 import { Features } from "@/components/sections/features";
+import { ReviewsSection } from "@/components/sections/reviews";
 import { heroData, featuresData, aboutData } from "@/data/mock";
 import { Button } from "@/components/ui/button";
 
@@ -34,6 +35,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <ReviewsSection />
     </>
   );
 }

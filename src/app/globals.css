@@ -126,6 +126,16 @@
   }
 }
 
+/* ── Otzyvist reviews widget (Shadow DOM) ──
+   :host виджета имеет contain:content, из-за чего стрелки карусели
+   (вынесенные на -12px за пределы трека) обрезаются. Внешние стили
+   побеждают :host в каскаде: даём хосту боковые отступы и компенсируем
+   их отрицательными маргинами — стрелки остаются внутри бокса хоста. */
+.rw-widget {
+  padding-inline: 12px;
+  margin-inline: -12px;
+}
+
 /* ── Scroll-reveal animation ── */
 @keyframes fade-up {
   from {

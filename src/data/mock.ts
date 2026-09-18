@@ -68,6 +68,7 @@ export const siteConfig: SiteConfig = {
     { label: "Расписание", href: "/schedule" },
     { label: "Команда", href: "/team" },
     { label: "Цены", href: "/pricing" },
+    { label: "Отзывы", href: "/reviews" },
     { label: "Контакты", href: "/contacts" },
   ],
   footer: {

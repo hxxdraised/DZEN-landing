@@ -29,9 +29,23 @@ export default async function DirectionsPage() {
             <h2 className="mb-5 font-display text-2xl font-semibold">{category.title}</h2>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {category.directions.map((direction) => (
-                <article key={direction.id} className="rounded-xl border bg-card p-5">
-                  <h3 className="text-lg font-semibold">{direction.title}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{direction.description}</p>
+                <article key={direction.id} className="overflow-hidden rounded-xl border bg-card">
+                  {direction.photoUrl && (
+                    <div className="aspect-[4/3] w-full overflow-hidden border-b border-dashed">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={direction.photoUrl}
+                        alt={direction.title}
+                        className="size-full object-cover transition-transform duration-500 hover:scale-105"
+                        loading="lazy"
+                        draggable={false}
+                      />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <h3 className="text-lg font-semibold">{direction.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{direction.description}</p>
+                  </div>
                 </article>
               ))}
             </div>

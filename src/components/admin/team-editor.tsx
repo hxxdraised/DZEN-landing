@@ -19,6 +19,7 @@ import {
   SaveBar,
   useUnloadGuard,
 } from "@/components/admin/editor-shared";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 
 interface MemberItem {
   id: number;
@@ -339,28 +340,12 @@ function MemberModal({
   return (
     <ModalShell title={isNew ? "Новый тренер" : "Редактирование тренера"} onClose={onClose}>
       <div className="space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="size-20 shrink-0 overflow-hidden rounded-full border border-dashed bg-muted/40">
-            {value.photoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={value.photoUrl} alt={value.name} className="size-full object-cover" />
-            ) : (
-              <div className="flex size-full items-center justify-center text-xl font-bold text-muted-foreground/60">
-                {initials(value.name) || "?"}
-              </div>
-            )}
-          </div>
-          <label className="flex min-w-0 flex-1 flex-col gap-1.5">
-            <span className="text-sm font-medium">Ссылка на фото</span>
-            <input
-              type="text"
-              value={value.photoUrl}
-              onChange={(e) => onChange({ ...value, photoUrl: e.target.value })}
-              placeholder="https://… (пока необязательно)"
-              className="h-10 rounded-xl border border-border bg-background px-3 text-sm outline-none focus:border-primary"
-            />
-          </label>
-        </div>
+        <ImageUploadField
+          value={value.photoUrl}
+          onChange={(photoUrl) => onChange({ ...value, photoUrl })}
+          prefix="team"
+          aspect="portrait"
+        />
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-1.5">

@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
 import { sessionFromRequest } from "@/lib/auth";
-import { pool } from "@/lib/db";
+import { pool, query } from "@/lib/db";
 import { CONTENT_TAGS, ensureTables } from "@/lib/content";
+import { deleteS3Urls } from "@/lib/s3";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +74,9 @@ export async function PUT(request: NextRequest) {
   if (validationError) return badRequest(validationError);
 
   const client = await pool.connect();
+  const oldPhotos = await query<{ photo_url: string }>(
+    "SELECT photo_url FROM team_members WHERE photo_url IS NOT NULL"
+  );
   try {
     await client.query("BEGIN");
 
@@ -117,6 +121,18 @@ export async function PUT(request: NextRequest) {
     }
 
     await client.query("COMMIT");
+
+    const newPhotoUrls = new Set<string>();
+    for (const member of payload) {
+      const photoUrl = String(member.photoUrl ?? "").trim();
+      if (photoUrl) newPhotoUrls.add(photoUrl);
+    }
+    const orphaned = oldPhotos.rows
+      .map((r) => r.photo_url)
+      .filter((url) => !newPhotoUrls.has(url));
+    if (orphaned.length > 0) {
+      await deleteS3Urls(orphaned);
+    }
   } catch (e) {
     await client.query("ROLLBACK");
     const message = e instanceof Error ? e.message : "Ошибка транзакции";

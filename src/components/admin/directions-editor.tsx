@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 
 interface DirectionItem {
   id: number;
@@ -504,17 +505,12 @@ function DirectionModal({
         </div>
 
         <div className="mt-5 space-y-4">
-          <div className="aspect-[4/3] overflow-hidden rounded-xl border border-dashed bg-muted/40">
-            {value.photoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={value.photoUrl} alt="Предпросмотр" className="size-full object-cover" />
-            ) : (
-              <div className="flex size-full flex-col items-center justify-center gap-1.5 text-muted-foreground/50">
-                <ImageIcon className="size-10" />
-                <span className="text-xs">Фото направления</span>
-              </div>
-            )}
-          </div>
+          <ImageUploadField
+            value={value.photoUrl}
+            onChange={(photoUrl) => onChange({ ...value, photoUrl })}
+            prefix="directions"
+            aspect="4/3"
+          />
 
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium">Название</span>
@@ -537,20 +533,6 @@ function DirectionModal({
               rows={4}
               className="resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-primary"
             />
-          </label>
-
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium">Ссылка на фото</span>
-            <input
-              type="text"
-              value={value.photoUrl}
-              onChange={(e) => onChange({ ...value, photoUrl: e.target.value })}
-              placeholder="https://… (пока необязательно)"
-              className="h-11 rounded-xl border border-border bg-background px-4 text-sm outline-none focus:border-primary"
-            />
-            <span className="text-xs text-muted-foreground">
-              В следующей итерации — загрузка в MinIO, пока поле для ссылки
-            </span>
           </label>
         </div>
 

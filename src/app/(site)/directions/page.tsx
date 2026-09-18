@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getDirections } from "@/lib/content";
+import { DirectionsCards } from "@/components/sections/directions-cards";
 
 export const metadata: Metadata = {
   title: "Направления",
@@ -27,28 +28,7 @@ export default async function DirectionsPage() {
         {categories.map((category) => (
           <section key={category.id}>
             <h2 className="mb-5 font-display text-2xl font-semibold">{category.title}</h2>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              {category.directions.map((direction) => (
-                <article key={direction.id} className="overflow-hidden rounded-xl border bg-card">
-                  {direction.photoUrl && (
-                    <div className="aspect-[3/4] w-full overflow-hidden border-b border-dashed">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={direction.photoUrl}
-                        alt={direction.title}
-                        className="size-full object-cover transition-transform duration-500 hover:scale-105"
-                        loading="lazy"
-                        draggable={false}
-                      />
-                    </div>
-                  )}
-                  <div className="p-5">
-                    <h3 className="text-lg font-semibold">{direction.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{direction.description}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <DirectionsCards directions={category.directions} />
           </section>
         ))}
       </div>

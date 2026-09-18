@@ -305,7 +305,7 @@ export function DirectionsEditor({ initial }: DirectionsEditorProps) {
                       }
                     }}
                     className={cn(
-                      "group relative cursor-pointer overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40",
+                      "group relative aspect-[3/4] cursor-pointer overflow-hidden rounded-xl border bg-muted/40 transition-colors hover:border-primary/40",
                       !direction.visible && "opacity-50",
                       drag?.list === "direction" &&
                         drag.categoryIndex === catIndex &&
@@ -324,52 +324,47 @@ export function DirectionsEditor({ initial }: DirectionsEditorProps) {
                   >
                     <GripVerticalIcon
                       aria-hidden
-                      className="absolute left-2 top-2 z-10 size-4 cursor-grab text-foreground/30 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
+                      className="absolute left-2 top-2 z-10 size-4 cursor-grab text-white/70 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
                       onClick={(e) => e.stopPropagation()}
                     />
-                    <div className="relative aspect-[3/4] border-b border-dashed bg-muted/40">
-                      {direction.photoUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={direction.photoUrl}
-                          alt={direction.title}
-                          className="size-full object-cover"
-                          draggable={false}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      ) : (
-                        <div className="flex size-full flex-col items-center justify-center gap-1.5 text-muted-foreground/50">
-                          <ImageIcon className="size-8" />
-                          <span className="text-xs">Фото направления</span>
-                        </div>
-                      )}
-                      <div
-                        className="absolute right-2 top-2 z-10 flex gap-0.5 rounded-full bg-background/85 p-0.5 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
+                    {direction.photoUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={direction.photoUrl}
+                        alt={direction.title}
+                        className="absolute inset-0 size-full object-cover"
+                        draggable={false}
                         onClick={(e) => e.stopPropagation()}
-                      >
-                        <IconButton
-                          label={direction.visible ? "Скрыть" : "Показать"}
-                          onClick={() =>
-                            mutate((data) => {
-                              const cat = data[catIndex];
-                              cat.directions = cat.directions.map((d, i) =>
-                                i === dirIndex ? { ...d, visible: !d.visible } : d
-                              );
-                              data[catIndex] = { ...cat };
-                              return data;
-                            })
-                          }
-                        >
-                          {direction.visible ? <EyeIcon className="size-4" /> : <EyeOffIcon className="size-4" />}
-                        </IconButton>
-                        <IconButton label="Удалить" danger onClick={() => removeDirection(catIndex, dirIndex)}>
-                          <Trash2Icon className="size-4" />
-                        </IconButton>
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/30">
+                        <ImageIcon className="size-10" />
                       </div>
+                    )}
+                    <div
+                      className="absolute right-2 top-2 z-10 flex gap-0.5 rounded-full bg-background/85 p-0.5 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {iconButton(
+                        direction.visible ? "Скрыть" : "Показать",
+                        () =>
+                          mutate((data) => {
+                            const cat = data[catIndex];
+                            cat.directions = cat.directions.map((d, i) =>
+                              i === dirIndex ? { ...d, visible: !d.visible } : d
+                            );
+                            data[catIndex] = { ...cat };
+                            return data;
+                          }),
+                        direction.visible ? <EyeIcon className="size-4" /> : <EyeOffIcon className="size-4" />
+                      )}
+                      {iconButton("Удалить", () => removeDirection(catIndex, dirIndex), <Trash2Icon className="size-4" />, true)}
                     </div>
-                    <div className="p-4">
-                      <h4 className="font-semibold leading-snug">{direction.title}</h4>
-                      <p className="mt-1.5 line-clamp-3 text-sm text-muted-foreground">
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent px-3 pb-3 pt-10">
+                      <h4 className="text-sm font-semibold leading-snug text-foreground">
+                        {direction.title}
+                      </h4>
+                      <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
                         {direction.description}
                       </p>
                     </div>

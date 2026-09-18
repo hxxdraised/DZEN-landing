@@ -15,8 +15,8 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: {
-    default: "DZEN",
-    template: "%s | DZEN",
+    default: "ДЗЕН",
+    template: "%s | ДЗЕН",
   },
   description: "Студия растяжки, йоги и осознанного движения в Казани",
 };

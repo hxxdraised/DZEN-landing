@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDownIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ModalShell } from "@/components/ui/modal-shell";
 import type { TeamMemberContent } from "@/lib/content";
 
 interface TeamProps {
@@ -18,45 +17,44 @@ function initials(name: string): string {
 }
 
 export function Team({ data }: TeamProps) {
+  const [selected, setSelected] = useState<TeamMemberContent | null>(null);
+
   return (
     <section className="container mx-auto px-4 py-24">
-      <h2 className="mb-12 text-center text-3xl font-bold tracking-tight sm:text-4xl">
-        Тренеры DZEN
+      <h2 className="mb-12 text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+        Тренеры ДЗЕН
       </h2>
-      <p className="mx-auto mb-4 max-w-3xl text-center text-sm text-muted-foreground">
-        Нажмите на карточку, чтобы узнать больше о тренере
-      </p>
-      <p className="mx-auto mb-8 max-w-3xl text-center text-sm text-muted-foreground">
-        Черным выделены направления в групповом расписании DZEN, цветным — доступные для
-        персональных тренировок.
-      </p>
       <div className="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((member) => (
-          <TeamCard key={member.id} member={member} />
+          <TeamCard key={member.id} member={member} onOpen={() => setSelected(member)} />
         ))}
       </div>
+
+      {selected && <TeamModal member={selected} onClose={() => setSelected(null)} />}
     </section>
   );
 }
 
-function TeamCard({ member }: { member: TeamMemberContent }) {
-  const [open, setOpen] = useState(false);
-
+function TeamCard({
+  member,
+  onOpen,
+}: {
+  member: TeamMemberContent;
+  onOpen: () => void;
+}) {
   return (
     <article
-      className={cn(
-        "group cursor-pointer overflow-hidden rounded-2xl border bg-card transition-colors",
-        open ? "border-primary/40 sm:col-span-2 lg:col-span-1" : "hover:border-primary/40"
-      )}
-      onClick={() => setOpen((v) => !v)}
+      className="group cursor-pointer overflow-hidden rounded-2xl border bg-card transition-colors hover:border-primary/40"
+      onClick={onOpen}
     >
-      <div className="aspect-[4/5] max-h-72 w-full overflow-hidden border-b border-dashed bg-muted/40">
+      <div className="aspect-[3/4] w-full overflow-hidden border-b border-dashed bg-muted/40">
         {member.photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={member.photoUrl}
             alt={member.name}
             className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
             draggable={false}
           />
         ) : (
@@ -90,38 +88,75 @@ function TeamCard({ member }: { member: TeamMemberContent }) {
             </span>
           ))}
         </div>
-
-        <p
-          className={cn(
-            "mt-3 flex items-center justify-center gap-1 text-xs text-muted-foreground/70 transition-transform",
-            open && "rotate-180"
-          )}
-        >
-          <ChevronDownIcon className="size-4" />
-          {open ? "свернуть" : "подробнее"}
-        </p>
-
-        {open && (
-          <div className="mt-4 space-y-4 border-t border-dashed pt-4 text-left">
-            <div>
-              <h4 className="text-sm font-semibold">Философия</h4>
-              <p className="mt-1 text-sm italic text-muted-foreground">{member.philosophy}</p>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold">Опыт и подход</h4>
-              <p className="mt-1 text-sm text-muted-foreground">{member.experience}</p>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold">Образование и сертификации</h4>
-              <ul className="mt-1 space-y-1 text-sm text-muted-foreground">
-                {member.education.map((item) => (
-                  <li key={`${member.id}-edu-${item}`}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
       </div>
     </article>
+  );
+}
+
+function TeamModal({ member, onClose }: { member: TeamMemberContent; onClose: () => void }) {
+  return (
+    <ModalShell title={member.name} onClose={onClose}>
+      <div className="flex flex-col gap-5 sm:flex-row">
+        <div className="aspect-[3/4] w-full shrink-0 overflow-hidden rounded-xl border border-dashed bg-muted/40 sm:w-44">
+          {member.photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={member.photoUrl}
+              alt={member.name}
+              className="size-full object-cover"
+              draggable={false}
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center">
+              <span className="flex size-24 items-center justify-center rounded-full bg-muted text-2xl font-bold text-muted-foreground/60">
+                {initials(member.name)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-medium text-primary/80">{member.role}</p>
+
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {member.groupSpecializations.map((item) => (
+              <span
+                key={`${member.id}-m-group-${item}`}
+                className="rounded-full bg-muted px-2.5 py-1 text-xs text-foreground"
+              >
+                {item}
+              </span>
+            ))}
+            {member.personalSpecializations.map((item) => (
+              <span
+                key={`${member.id}-m-personal-${item}`}
+                className="rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 space-y-4">
+        <div>
+          <h4 className="text-sm font-semibold">Философия</h4>
+          <p className="mt-1 text-sm italic text-muted-foreground">{member.philosophy}</p>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold">Опыт и подход</h4>
+          <p className="mt-1 text-sm text-muted-foreground">{member.experience}</p>
+        </div>
+        <div>
+          <h4 className="text-sm font-semibold">Образование и сертификации</h4>
+          <ul className="mt-1 space-y-1 text-sm text-muted-foreground">
+            {member.education.map((item) => (
+              <li key={`${member.id}-m-edu-${item}`}>• {item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </ModalShell>
   );
 }

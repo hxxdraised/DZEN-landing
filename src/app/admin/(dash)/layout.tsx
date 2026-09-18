@@ -33,7 +33,7 @@ export default async function AdminDashLayout({
         <div className="container mx-auto flex h-14 items-center justify-between gap-4 px-4">
           <div className="flex min-w-0 items-center gap-6">
             <span className="font-display text-lg font-semibold whitespace-nowrap">
-              DZEN · Админ
+              ДЗЕН · Админ
             </span>
             <nav className="flex gap-1 text-sm">
               {NAV_ITEMS.map((item) => (

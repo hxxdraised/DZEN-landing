@@ -6,7 +6,7 @@ import { benefitsData, studioRules } from "@/data/mock";
 export const metadata: Metadata = {
   title: "Цены",
   description:
-    "Абонементы студии DZEN: пробные занятия, «Фокус» на 4 недели, гибкие абонементы, персональные и парные тренировки.",
+    "Абонементы студии ДЗЕН: пробные занятия, «Фокус» на 4 недели, гибкие абонементы, персональные и парные тренировки.",
 };
 
 export const revalidate = 3600;
@@ -21,7 +21,7 @@ export default async function PricingPage() {
           Ваше тело — ваш график — ваш абонемент
         </h1>
         <p className="mt-4 text-muted-foreground">
-          В DZEN нет шаблонов. Выбирайте ритм, который подходит именно вам: интенсив на 4 недели
+          В ДЗЕН нет шаблонов. Выбирайте ритм, который подходит именно вам: интенсив на 4 недели
           или гибкий график с возможностью заморозки. По любому абонементу доступны все 14
           направлений студии.
         </p>
@@ -81,7 +81,7 @@ export default async function PricingPage() {
       </div>
 
       <section className="mt-14 rounded-2xl border p-6">
-        <h2 className="font-display text-2xl font-semibold">Ваши преимущества в DZEN</h2>
+        <h2 className="font-display text-2xl font-semibold">Ваши преимущества в ДЗЕН</h2>
         <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
           {benefitsData.map((item) => (
             <li key={item.title}>

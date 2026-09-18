@@ -4,7 +4,7 @@ import { getTeam } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Команда",
-  description: "Тренеры студии DZEN: сертифицированные специалисты по йоге, пилатесу, растяжке и силовым направлениям.",
+  description: "Тренеры студии ДЗЕН: сертифицированные специалисты по йоге, пилатесу, растяжке и силовым направлениям.",
 };
 
 export const revalidate = 3600;

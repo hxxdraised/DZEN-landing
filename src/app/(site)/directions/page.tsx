@@ -4,7 +4,7 @@ import { getDirections } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Направления",
   description:
-    "Направления студии DZEN: растяжка, сила и тонус, йога и осознанность, танцевальные классы.",
+    "Направления студии ДЗЕН: растяжка, сила и тонус, йога и осознанность, танцевальные классы.",
 };
 
 export const revalidate = 3600;
@@ -31,7 +31,7 @@ export default async function DirectionsPage() {
               {category.directions.map((direction) => (
                 <article key={direction.id} className="overflow-hidden rounded-xl border bg-card">
                   {direction.photoUrl && (
-                    <div className="aspect-[4/3] w-full overflow-hidden border-b border-dashed">
+                    <div className="aspect-[3/4] w-full overflow-hidden border-b border-dashed">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={direction.photoUrl}

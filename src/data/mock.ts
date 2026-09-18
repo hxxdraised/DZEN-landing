@@ -60,7 +60,7 @@ export interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "DZEN",
+  name: "ДЗЕН",
   description: "Студия растяжки, йоги и осознанного движения в Казани",
   navigation: [
     { label: "Главная", href: "/" },
@@ -71,7 +71,7 @@ export const siteConfig: SiteConfig = {
     { label: "Контакты", href: "/contacts" },
   ],
   footer: {
-    copyright: `© ${new Date().getFullYear()} DZEN, Казань. Все права защищены.`,
+    copyright: `© ${new Date().getFullYear()} ДЗЕН, Казань. Все права защищены.`,
     links: [
       { label: "Политика конфиденциальности", href: "/privacy" },
       { label: "FAQ", href: "/faq" },
@@ -80,7 +80,7 @@ export const siteConfig: SiteConfig = {
 };
 
 export const heroData: HeroData = {
-  title: "DZEN — ваше пространство баланса в Казани",
+  title: "ДЗЕН — ваше пространство баланса в Казани",
   subtitle:
     "Тонус, гибкость и гармония — в одной студии. Тренируйтесь в комфортном для себя темпе с гибким абонементом без долгих обязательств.",
   ctaText: "Записаться на пробное занятие",
@@ -104,7 +104,7 @@ export const featuresData: Feature[] = [
   {
     title: "Экспертный подход",
     description:
-      "Тренеры DZEN — сертифицированные специалисты с практическим опытом и вниманием к технике и безопасности.",
+      "Тренеры ДЗЕН — сертифицированные специалисты с практическим опытом и вниманием к технике и безопасности.",
     icon: "users",
   },
   {
@@ -118,7 +118,7 @@ export const featuresData: Feature[] = [
 export const aboutData: AboutData = {
   title: "Гармония через движение",
   description:
-    "DZEN — это не просто фитнес-студия. Это место, где создают баланс. Мы верим, что здоровое тело — это сочетание силы, гибкости и осознанности.",
+    "ДЗЕН — это не просто фитнес-студия. Это место, где создают баланс. Мы верим, что здоровое тело — это сочетание силы, гибкости и осознанности.",
   mission:
     "Здесь вы сможете выстроить тренировки под свои цели, не разрываясь между разными залами.",
   benefits: [

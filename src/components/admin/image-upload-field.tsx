@@ -44,7 +44,8 @@ interface ImageUploadFieldProps {
   value: string;
   onChange: (url: string) => void;
   prefix: "directions" | "team";
-  aspect?: "4/3" | "square" | "portrait";
+  ratio?: string;
+  className?: string;
   manualLabel?: string;
 }
 
@@ -52,7 +53,8 @@ export function ImageUploadField({
   value,
   onChange,
   prefix,
-  aspect = "4/3",
+  ratio = "3/4",
+  className,
   manualLabel = "вставить ссылку вручную",
 }: ImageUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -94,12 +96,11 @@ export function ImageUploadField({
   return (
     <div className="space-y-2">
       <div
+        style={{ aspectRatio: ratio }}
         className={cn(
           "relative overflow-hidden rounded-xl border border-dashed transition-colors",
           dragOver ? "border-primary bg-primary/5" : "border-border bg-muted/30",
-          aspect === "4/3" && "aspect-[4/3]",
-          aspect === "square" && "aspect-square max-w-56",
-          aspect === "portrait" && "aspect-[4/5] max-h-72"
+          className
         )}
         onDragOver={(e) => {
           e.preventDefault();

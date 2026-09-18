@@ -327,7 +327,7 @@ export function DirectionsEditor({ initial }: DirectionsEditorProps) {
                       className="absolute left-2 top-2 z-10 size-4 cursor-grab text-foreground/30 opacity-0 transition-opacity group-hover:opacity-100 active:cursor-grabbing"
                       onClick={(e) => e.stopPropagation()}
                     />
-                    <div className="relative aspect-[4/3] border-b border-dashed bg-muted/40">
+                    <div className="relative aspect-[3/4] border-b border-dashed bg-muted/40">
                       {direction.photoUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -509,7 +509,7 @@ function DirectionModal({
             value={value.photoUrl}
             onChange={(photoUrl) => onChange({ ...value, photoUrl })}
             prefix="directions"
-            aspect="4/3"
+            ratio="3/4"
           />
 
           <label className="flex flex-col gap-1.5">

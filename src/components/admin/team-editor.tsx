@@ -213,7 +213,7 @@ export function TeamEditor({ initial }: TeamEditorProps) {
                 onClick={(e) => e.stopPropagation()}
               />
 
-              <div className="aspect-square max-h-56 w-full overflow-hidden border-b border-dashed bg-muted/40">
+              <div className="aspect-[3/4] w-full overflow-hidden border-b border-dashed bg-muted/40">
                 {member.photoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -348,7 +348,7 @@ function MemberModal({
           value={value.photoUrl}
           onChange={(photoUrl) => onChange({ ...value, photoUrl })}
           prefix="team"
-          aspect="portrait"
+          ratio="3/4"
         />
 
         <div className="grid gap-4 sm:grid-cols-2">

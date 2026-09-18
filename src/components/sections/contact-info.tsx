@@ -10,7 +10,7 @@ interface ContactInfoProps {
 export function ContactInfoSection({ data }: ContactInfoProps) {
   return (
     <section className="container mx-auto max-w-5xl px-4 py-24">
-      <h2 className="mb-12 text-center text-3xl font-bold tracking-tight sm:text-4xl">
+      <h2 className="mb-12 text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl">
         Контакты
       </h2>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">

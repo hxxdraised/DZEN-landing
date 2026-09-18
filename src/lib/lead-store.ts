@@ -64,3 +64,58 @@ export async function markLeadDelivery(
     [id, delivered, error ?? null]
   );
 }
+
+export interface LeadRow {
+  id: number;
+  name: string;
+  phone: string;
+  contactMethod: string;
+  message: string | null;
+  source: string;
+  telegramDelivered: boolean;
+  telegramError: string | null;
+  createdAt: Date;
+}
+
+export async function listLeads(
+  page: number,
+  perPage: number
+): Promise<{ rows: LeadRow[]; total: number }> {
+  await ensureTable();
+
+  const count = await query<{ total: string }>("SELECT count(*) AS total FROM leads");
+  const total = Number(count.rows[0]?.total ?? 0);
+
+  const offset = (page - 1) * perPage;
+  const result = await query<{
+    id: string;
+    name: string;
+    phone: string;
+    contact_method: string;
+    message: string | null;
+    source: string;
+    telegram_delivered: boolean;
+    telegram_error: string | null;
+    created_at: Date;
+  }>(
+    `SELECT id, name, phone, contact_method, message, source,
+            telegram_delivered, telegram_error, created_at
+     FROM leads ORDER BY created_at DESC, id DESC LIMIT $1 OFFSET $2`,
+    [perPage, offset]
+  );
+
+  return {
+    rows: result.rows.map((r) => ({
+      id: Number(r.id),
+      name: r.name,
+      phone: r.phone,
+      contactMethod: r.contact_method,
+      message: r.message,
+      source: r.source,
+      telegramDelivered: r.telegram_delivered,
+      telegramError: r.telegram_error,
+      createdAt: r.created_at,
+    })),
+    total,
+  };
+}

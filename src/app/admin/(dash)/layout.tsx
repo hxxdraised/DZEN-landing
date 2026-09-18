@@ -14,6 +14,7 @@ const NAV_ITEMS = [
   { href: "/admin/content/directions", label: "Направления" },
   { href: "/admin/content/team", label: "Команда" },
   { href: "/admin/content/pricing", label: "Цены" },
+  { href: "/admin/leads", label: "Заявки" },
   { href: "/admin/integrations/listok", label: "Listok" },
   { href: "/admin/integrations/telegram", label: "Telegram" },
 ];

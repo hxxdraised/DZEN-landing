@@ -38,7 +38,9 @@ interface TeamEditorProps {
   initial: MemberItem[];
 }
 
-type ModalState = null | (Omit<MemberItem, "visible" | "photoUrl"> & { photoUrl: string }) & {
+type ModalState = null | (Omit<MemberItem, "visible" | "photoUrl" | "id"> & {
+  photoUrl: string;
+}) & {
   index: number | null;
 };
 

@@ -21,7 +21,7 @@ export function ListokCredentialsForm({
   const [clientId, setClientId] = useState("");
   const [clientSecret, setClientSecret] = useState("");
   const [saving, setSaving] = useState(false);
-  const [state, setState] = useState<{ kind: "idle" | "ok" | "error"; text: string }>({
+  const [state, setState] = useState<{ kind: "idle" | "ok" | "error"; text?: string }>({
     kind: "idle",
   });
   const [copied, setCopied] = useState(false);

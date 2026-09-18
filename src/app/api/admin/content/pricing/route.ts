@@ -40,12 +40,11 @@ function str(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function validatePrice(value: unknown, field: string): number | null {
+function validatePrice(value: unknown): number | null {
   if (typeof value !== "number" || !Number.isFinite(value) || !Number.isInteger(value)) {
     return null;
   }
   if (value < 0 || value > 10_000_000) return null;
-  void field;
   return value;
 }
 

@@ -1,9 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
-import { LeadProvider } from "@/components/lead/lead-provider";
-import { siteConfig } from "@/data/mock";
 import "./globals.css";
 
 const inter = Inter({
@@ -19,10 +15,10 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.name,
-    template: `%s | ${siteConfig.name}`,
+    default: "DZEN",
+    template: "%s | DZEN",
   },
-  description: siteConfig.description,
+  description: "Студия растяжки, йоги и осознанного движения в Казани",
 };
 
 export default function RootLayout({
@@ -35,11 +31,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
       >
-        <LeadProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-        </LeadProvider>
+        {children}
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-import { listokConfig, refreshAccessToken } from "@/lib/listok/oauth";
+import { getListokConfig, refreshAccessToken } from "@/lib/listok/oauth";
 import { getTokens, saveTokens } from "@/lib/listok/token-store";
 
 export class ListokApiError extends Error {
@@ -56,7 +56,7 @@ interface RequestOptions {
 }
 
 export async function listokRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { baseUrl } = listokConfig();
+  const { baseUrl } = await getListokConfig();
 
   const buildUrl = (accessToken: string) => {
     const url = new URL(`${baseUrl}${path}`);

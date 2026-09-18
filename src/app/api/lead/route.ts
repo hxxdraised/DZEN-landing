@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { insertLead, markLeadDelivery } from "@/lib/lead-store";
-import { sendLeadMessage, type ContactMethod } from "@/lib/telegram";
+import { sendLeadMessage } from "@/lib/telegram";
+import type { ContactMethod } from "@/lib/telegram-shared";
 
 export const dynamic = "force-dynamic";
 

@@ -1,17 +1,18 @@
-export type ContactMethod = "telegram" | "max" | "call";
+import { getSetting } from "@/lib/settings";
+import {
+  DEFAULT_NOTIFY_TEMPLATE,
+  renderTemplate,
+  type LeadPayload,
+} from "@/lib/telegram-shared";
 
-export const CONTACT_METHOD_LABELS: Record<ContactMethod, string> = {
-  telegram: "Telegram",
-  max: "MAX",
-  call: "Звонок",
-};
+export const SETTING_BOT_TOKEN = "telegram.bot_token";
+export const SETTING_CHAT_ID = "telegram.chat_id";
+export const SETTING_NOTIFY_TEMPLATE = "telegram.notify_template";
 
-export interface LeadPayload {
-  name: string;
-  phone: string;
-  contactMethod: ContactMethod;
-  message?: string | null;
-  source: string;
+export interface TelegramRuntimeConfig {
+  token: string | null;
+  chatId: string | null;
+  template: string;
 }
 
 export class TelegramError extends Error {
@@ -21,72 +22,77 @@ export class TelegramError extends Error {
   }
 }
 
-export function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+export async function getTelegramConfig(): Promise<TelegramRuntimeConfig> {
+  const [token, chatId, template] = await Promise.all([
+    getSetting(SETTING_BOT_TOKEN),
+    getSetting(SETTING_CHAT_ID),
+    getSetting(SETTING_NOTIFY_TEMPLATE),
+  ]);
+
+  return {
+    token: token ?? null,
+    chatId: chatId ?? null,
+    template: template ?? DEFAULT_NOTIFY_TEMPLATE,
+  };
 }
 
-export function formatPhoneDisplay(digits: string): string {
-  const d = digits.replace(/\D/g, "").slice(0, 11);
-  if (d.length === 0) return "";
-  const p = d.slice(1);
-  let out = "+7";
-  if (p.length > 0) out += ` (${p.slice(0, 3)}`;
-  if (p.length >= 3) out += ")";
-  if (p.length > 3) out += ` ${p.slice(3, 6)}`;
-  if (p.length >= 6) out += `-${p.slice(6, 8)}`;
-  if (p.length >= 8) out += `-${p.slice(8, 10)}`;
-  return out;
-}
-
-export async function sendLeadMessage(lead: LeadPayload): Promise<void> {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-
-  if (!token || !chatId) {
-    throw new TelegramError("TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not configured");
-  }
-
-  const now = new Intl.DateTimeFormat("ru-RU", {
-    timeZone: "Europe/Moscow",
-    day: "2-digit",
-    month: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date());
-
-  const lines = [
-    "🆕 <b>Заявка с сайта</b>",
-    "",
-    `👤 <b>${escapeHtml(lead.name)}</b>`,
-    `📞 <a href="tel:+${lead.phone.replace(/\D/g, "")}">${formatPhoneDisplay(lead.phone)}</a>`,
-    `💬 Предпочитает: <b>${CONTACT_METHOD_LABELS[lead.contactMethod]}</b>`,
-  ];
-
-  if (lead.message && lead.message.trim()) {
-    lines.push(`📝 Пожелания: ${escapeHtml(lead.message.trim())}`);
-  }
-
-  lines.push(`📍 Источник: ${escapeHtml(lead.source)}`);
-  lines.push(`🕐 ${now} МСК`);
-
+async function sendTelegramText(
+  token: string,
+  chatId: string,
+  text: string,
+  silent = false
+): Promise<void> {
   const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: chatId,
-      text: lines.join("\n"),
+      text,
       parse_mode: "HTML",
+      disable_notification: silent,
       link_preview_options: { is_disabled: true },
     }),
     cache: "no-store",
   });
 
-  const data = (await response.json().catch(() => null)) as { ok?: boolean; description?: string } | null;
+  const data = (await response.json().catch(() => null)) as {
+    ok?: boolean;
+    description?: string;
+  } | null;
 
   if (!response.ok || !data?.ok) {
     throw new TelegramError(data?.description ?? `Telegram API HTTP ${response.status}`);
   }
+}
+
+export async function sendLeadMessage(lead: LeadPayload): Promise<void> {
+  const config = await getTelegramConfig();
+  if (!config.token || !config.chatId) {
+    throw new TelegramError("Telegram is not configured: bot token or chat id is missing");
+  }
+  await sendTelegramText(config.token, config.chatId, renderTemplate(config.template, lead));
+}
+
+export async function sendTestMessage(): Promise<void> {
+  const config = await getTelegramConfig();
+  if (!config.token || !config.chatId) {
+    throw new TelegramError("Telegram is not configured: bot token or chat id is missing");
+  }
+
+  const sample: LeadPayload = {
+    name: "Мария Иванова",
+    phone: "79652345678",
+    contactMethod: "telegram",
+    message: "Хочу на растяжку, новичок",
+    source: "Тест из админ-панели",
+  };
+
+  const text = [
+    "🧪 <b>Тестовое сообщение</b>",
+    "(проверка настроек, пример данных)",
+    "",
+    renderTemplate(config.template, sample),
+  ].join("\n");
+
+  await sendTelegramText(config.token, config.chatId, text, true);
 }

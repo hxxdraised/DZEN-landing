@@ -1,5 +1,5 @@
 import { query } from "@/lib/db";
-import type { ContactMethod } from "@/lib/telegram";
+import type { ContactMethod } from "@/lib/telegram-shared";
 
 export interface NewLead {
   name: string;

@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import { Team } from "@/components/sections/team";
-import { aboutData, teamData } from "@/data/mock";
+import { aboutData } from "@/data/mock";
+import { getTeam } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "О нас",
 };
 
-export default function AboutPage() {
+export const revalidate = 3600;
+
+export default async function AboutPage() {
+  const team = await getTeam();
+
   return (
     <>
       <section className="container mx-auto max-w-3xl px-4 py-24 text-center">
@@ -20,7 +25,7 @@ export default function AboutPage() {
           {aboutData.mission}
         </blockquote>
       </section>
-      <Team data={teamData} />
+      <Team data={team} />
     </>
   );
 }

@@ -5,10 +5,10 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import type { Trainer } from "@/data/mock";
+import type { TeamMemberContent } from "@/lib/content";
 
 interface TeamProps {
-  data: Trainer[];
+  data: TeamMemberContent[];
 }
 
 export function Team({ data }: TeamProps) {
@@ -18,20 +18,18 @@ export function Team({ data }: TeamProps) {
         Тренеры DZEN
       </h2>
       <p className="mx-auto mb-8 max-w-3xl text-center text-sm text-muted-foreground">
-        Черным выделены направления в групповом расписании DZEN, синим — доступные
-        для персональных тренировок.
+        Черным выделены направления в групповом расписании DZEN, цветным — доступные для
+        персональных тренировок.
       </p>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((member) => (
-          <Card key={member.name} className="gap-4">
+          <Card key={member.id} className="gap-4">
             <CardHeader>
               <div className="mx-auto mb-2 flex size-16 items-center justify-center rounded-full bg-muted text-2xl font-bold text-muted-foreground">
                 {member.name.slice(0, 1)}
               </div>
               <CardTitle className="text-center">{member.name}</CardTitle>
-              <p className="text-center text-sm font-medium text-primary/80">
-                {member.role}
-              </p>
+              <p className="text-center text-sm font-medium text-primary/80">{member.role}</p>
               <CardDescription className="mt-2 text-center">
                 {member.experience}
               </CardDescription>
@@ -40,7 +38,7 @@ export function Team({ data }: TeamProps) {
               <div className="flex flex-wrap gap-2">
                 {member.groupSpecializations.map((item) => (
                   <span
-                    key={`${member.name}-group-${item}`}
+                    key={`${member.id}-group-${item}`}
                     className="rounded-full bg-muted px-2.5 py-1 text-xs text-foreground"
                   >
                     {item}
@@ -48,7 +46,7 @@ export function Team({ data }: TeamProps) {
                 ))}
                 {member.personalSpecializations.map((item) => (
                   <span
-                    key={`${member.name}-personal-${item}`}
+                    key={`${member.id}-personal-${item}`}
                     className="rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary"
                   >
                     {item}
@@ -62,7 +60,7 @@ export function Team({ data }: TeamProps) {
                 </summary>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                   {member.education.map((item) => (
-                    <li key={`${member.name}-edu-${item}`}>• {item}</li>
+                    <li key={`${member.id}-edu-${item}`}>• {item}</li>
                   ))}
                 </ul>
               </details>

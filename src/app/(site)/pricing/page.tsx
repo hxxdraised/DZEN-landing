@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import { benefitsData, pricingData, studioRules } from "@/data/mock";
+import { LeadButton } from "@/components/lead/lead-button";
+import { formatPrice, getPricing } from "@/lib/content";
+import { benefitsData, studioRules } from "@/data/mock";
 
 export const metadata: Metadata = {
   title: "Цены",
+  description:
+    "Абонементы студии DZEN: пробные занятия, «Фокус» на 4 недели, гибкие абонементы, персональные и парные тренировки.",
 };
 
-export default function PricingPage() {
+export const revalidate = 3600;
+
+export default async function PricingPage() {
+  const blocks = await getPricing();
+
   return (
     <section className="container mx-auto px-4 py-24">
       <div className="mx-auto mb-14 max-w-4xl text-center">
@@ -13,44 +21,61 @@ export default function PricingPage() {
           Ваше тело — ваш график — ваш абонемент
         </h1>
         <p className="mt-4 text-muted-foreground">
-          В DZEN нет шаблонов. Выбирайте ритм, который подходит именно вам: интенсив
-          на 4 недели или гибкий график с возможностью заморозки.
+          В DZEN нет шаблонов. Выбирайте ритм, который подходит именно вам: интенсив на 4 недели
+          или гибкий график с возможностью заморозки. По любому абонементу доступны все 14
+          направлений студии.
         </p>
       </div>
 
       <div className="space-y-10">
-        {pricingData.map((block) => (
-          <section key={block.title} className="rounded-2xl border p-6">
+        {blocks.map((block) => (
+          <section key={block.id} className="rounded-2xl border p-6">
             <h2 className="font-display text-2xl font-semibold">{block.title}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{block.subtitle}</p>
+            {block.subtitle && <p className="mt-2 text-sm text-muted-foreground">{block.subtitle}</p>}
             <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {block.plans.map((plan) => (
-                <article key={`${block.title}-${plan.name}`} className="rounded-xl border p-4">
+                <article key={plan.id} className="flex flex-col rounded-xl border p-4">
                   <h3 className="text-lg font-semibold">{plan.name}</h3>
-                  {plan.label ? (
-                    <p className="mt-1 text-sm font-medium text-primary">{plan.label}</p>
-                  ) : null}
-                  <p className="mt-2 text-sm text-muted-foreground">{plan.details}</p>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Срок действия: {plan.duration}
-                  </p>
+                  {plan.label && <p className="mt-1 text-sm font-medium text-primary">{plan.label}</p>}
+                  {plan.details && (
+                    <p className="mt-2 text-sm text-muted-foreground">{plan.details}</p>
+                  )}
+                  {plan.audience && (
+                    <p className="mt-1 text-sm text-muted-foreground italic">{plan.audience}</p>
+                  )}
+                  {plan.duration && (
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      Срок действия: {plan.duration}
+                    </p>
+                  )}
                   <div className="mt-3 space-y-1">
-                    {plan.fullPrice ? (
-                      <p className="text-sm text-muted-foreground">Полная: {plan.fullPrice}</p>
-                    ) : null}
-                    {plan.discountPrice ? (
-                      <p className="font-medium text-primary">
-                        Со скидкой: {plan.discountPrice}
+                    {plan.discountPrice !== null && (
+                      <p className="text-sm text-muted-foreground line-through">
+                        {formatPrice(plan.fullPrice)}
                       </p>
-                    ) : null}
+                    )}
+                    <p
+                      className={
+                        plan.discountPrice !== null
+                          ? "text-xl font-semibold text-primary"
+                          : "text-xl font-semibold"
+                      }
+                    >
+                      {formatPrice(plan.discountPrice ?? plan.fullPrice)}
+                    </p>
                   </div>
-                  <p className="mt-4 text-sm font-medium">{plan.ctaText}</p>
+                  <div className="mt-auto pt-4">
+                    <LeadButton
+                      source={`Тариф «${plan.name}» (${block.title})`}
+                      label={plan.ctaText}
+                      size="sm"
+                      className="w-full"
+                    />
+                  </div>
                 </article>
               ))}
             </div>
-            {block.note ? (
-              <p className="mt-5 text-sm text-muted-foreground">{block.note}</p>
-            ) : null}
+            {block.note && <p className="mt-5 text-xs text-muted-foreground">{block.note}</p>}
           </section>
         ))}
       </div>

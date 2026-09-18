@@ -97,11 +97,18 @@ export async function PUT(request: NextRequest) {
 
       if (rawId && rawId > 0) {
         await client.query(
-          `UPDATE team_members SET name = $1, role = $2, group_specializations = $3,
-                 personal_specializations = $4, philosophy = $5, experience = $6,
-                 education = $7, photo_url = $8, visible = $9, sort_order = $10, updated_at = now()
-           WHERE id = $11`,
-          [name, role, group, personal, philosophy, experience, education, photoUrl || null, visible, i, rawId]
+          `INSERT INTO team_members
+             (id, name, role, group_specializations, personal_specializations, philosophy,
+              experience, education, photo_url, visible, sort_order)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+           ON CONFLICT (id) DO UPDATE SET
+             name = EXCLUDED.name, role = EXCLUDED.role,
+             group_specializations = EXCLUDED.group_specializations,
+             personal_specializations = EXCLUDED.personal_specializations,
+             philosophy = EXCLUDED.philosophy, experience = EXCLUDED.experience,
+             education = EXCLUDED.education, photo_url = EXCLUDED.photo_url,
+             visible = EXCLUDED.visible, sort_order = EXCLUDED.sort_order, updated_at = now()`,
+          [rawId, name, role, group, personal, philosophy, experience, education, photoUrl || null, visible, i]
         );
         keepIds.push(rawId);
       } else {
@@ -115,6 +122,11 @@ export async function PUT(request: NextRequest) {
         keepIds.push(Number(inserted.rows[0].id));
       }
     }
+
+    await client.query(
+      `SELECT setval(pg_get_serial_sequence('team_members','id'),
+                     COALESCE((SELECT max(id) FROM team_members), 0) + 1, false)`
+    );
 
     if (keepIds.length > 0) {
       await client.query(`DELETE FROM team_members WHERE id <> ALL($1::bigint[])`, [keepIds]);

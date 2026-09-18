@@ -108,6 +108,10 @@ export function TeamEditor({ initial }: TeamEditorProps) {
   };
 
   const save = async () => {
+    if (draft.length === 0) {
+      setError("Нельзя сохранить пустую команду — добавьте хотя бы одного тренера");
+      return;
+    }
     setSaving(true);
     setError(null);
     try {

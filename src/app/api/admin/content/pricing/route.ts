@@ -114,10 +114,12 @@ export async function PUT(request: NextRequest) {
       let blockId: number;
       if (rawBlockId && rawBlockId > 0) {
         await client.query(
-          `UPDATE pricing_blocks SET title = $1, subtitle = $2, note = $3, visible = $4,
-                 sort_order = $5, updated_at = now()
-           WHERE id = $6`,
-          [title, subtitle, note, visible, bi, rawBlockId]
+          `INSERT INTO pricing_blocks (id, title, subtitle, note, visible, sort_order)
+           VALUES ($1, $2, $3, $4, $5, $6)
+           ON CONFLICT (id) DO UPDATE SET
+             title = EXCLUDED.title, subtitle = EXCLUDED.subtitle, note = EXCLUDED.note,
+             visible = EXCLUDED.visible, sort_order = EXCLUDED.sort_order, updated_at = now()`,
+          [rawBlockId, title, subtitle, note, visible, bi]
         );
         blockId = rawBlockId;
       } else {
@@ -141,11 +143,18 @@ export async function PUT(request: NextRequest) {
 
         if (rawPlanId && rawPlanId > 0) {
           await client.query(
-            `UPDATE pricing_plans SET block_id = $1, name = $2, label = $3, details = $4,
-                   audience = $5, duration = $6, full_price = $7, discount_price = $8,
-                   cta_text = $9, visible = $10, sort_order = $11, updated_at = now()
-             WHERE id = $12`,
+            `INSERT INTO pricing_plans
+               (id, block_id, name, label, details, audience, duration, full_price,
+                discount_price, cta_text, visible, sort_order)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+             ON CONFLICT (id) DO UPDATE SET
+               block_id = EXCLUDED.block_id, name = EXCLUDED.name, label = EXCLUDED.label,
+               details = EXCLUDED.details, audience = EXCLUDED.audience,
+               duration = EXCLUDED.duration, full_price = EXCLUDED.full_price,
+               discount_price = EXCLUDED.discount_price, cta_text = EXCLUDED.cta_text,
+               visible = EXCLUDED.visible, sort_order = EXCLUDED.sort_order, updated_at = now()`,
             [
+              rawPlanId,
               blockId,
               str(plan.name),
               str(plan.label) || null,
@@ -157,7 +166,6 @@ export async function PUT(request: NextRequest) {
               str(plan.ctaText),
               plan.visible !== false,
               pi,
-              rawPlanId,
             ]
           );
           keepPlanIds.push(rawPlanId);
@@ -185,6 +193,15 @@ export async function PUT(request: NextRequest) {
         }
       }
     }
+
+    await client.query(
+      `SELECT setval(pg_get_serial_sequence('pricing_blocks','id'),
+                     COALESCE((SELECT max(id) FROM pricing_blocks), 0) + 1, false)`
+    );
+    await client.query(
+      `SELECT setval(pg_get_serial_sequence('pricing_plans','id'),
+                     COALESCE((SELECT max(id) FROM pricing_plans), 0) + 1, false)`
+    );
 
     if (keepPlanIds.length > 0) {
       await client.query(`DELETE FROM pricing_plans WHERE id <> ALL($1::bigint[])`, [keepPlanIds]);

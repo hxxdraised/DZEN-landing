@@ -89,9 +89,12 @@ export async function PUT(request: NextRequest) {
       let realCategoryId: number;
       if (categoryId) {
         await client.query(
-          `UPDATE direction_categories SET title = $1, visible = $2, sort_order = $3, updated_at = now()
-           WHERE id = $4`,
-          [title, visible, ci, categoryId]
+          `INSERT INTO direction_categories (id, title, visible, sort_order)
+           VALUES ($1, $2, $3, $4)
+           ON CONFLICT (id) DO UPDATE SET
+             title = EXCLUDED.title, visible = EXCLUDED.visible,
+             sort_order = EXCLUDED.sort_order, updated_at = now()`,
+          [categoryId, title, visible, ci]
         );
         realCategoryId = categoryId;
       } else {
@@ -115,10 +118,13 @@ export async function PUT(request: NextRequest) {
 
         if (directionId) {
           await client.query(
-            `UPDATE directions SET category_id = $1, title = $2, description = $3,
-                   photo_url = $4, visible = $5, sort_order = $6, updated_at = now()
-             WHERE id = $7`,
-            [realCategoryId, dTitle, dDescription, photoUrl || null, dVisible, di, directionId]
+            `INSERT INTO directions (id, category_id, title, description, photo_url, visible, sort_order)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)
+             ON CONFLICT (id) DO UPDATE SET
+               category_id = EXCLUDED.category_id, title = EXCLUDED.title,
+               description = EXCLUDED.description, photo_url = EXCLUDED.photo_url,
+               visible = EXCLUDED.visible, sort_order = EXCLUDED.sort_order, updated_at = now()`,
+            [directionId, realCategoryId, dTitle, dDescription, photoUrl || null, dVisible, di]
           );
           keepDirectionIds.push(directionId);
         } else {
@@ -131,6 +137,15 @@ export async function PUT(request: NextRequest) {
         }
       }
     }
+
+    await client.query(
+      `SELECT setval(pg_get_serial_sequence('direction_categories','id'),
+                     COALESCE((SELECT max(id) FROM direction_categories), 0) + 1, false)`
+    );
+    await client.query(
+      `SELECT setval(pg_get_serial_sequence('directions','id'),
+                     COALESCE((SELECT max(id) FROM directions), 0) + 1, false)`
+    );
 
     if (keepDirectionIds.length > 0) {
       await client.query(`DELETE FROM directions WHERE id <> ALL($1::bigint[])`, [

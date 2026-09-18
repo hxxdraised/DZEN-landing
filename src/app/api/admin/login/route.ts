@@ -3,6 +3,7 @@ import {
   ADMIN_SESSION_COOKIE,
   authenticateAdmin,
   createSessionToken,
+  isHttpsRequest,
   sessionCookieOptions,
 } from "@/lib/auth";
 
@@ -60,6 +61,10 @@ export async function POST(request: NextRequest) {
   }
 
   const response = NextResponse.json({ ok: true });
-  response.cookies.set(ADMIN_SESSION_COOKIE, createSessionToken(login), sessionCookieOptions());
+  response.cookies.set(
+    ADMIN_SESSION_COOKIE,
+    createSessionToken(login),
+    sessionCookieOptions(isHttpsRequest(request)),
+  );
   return response;
 }

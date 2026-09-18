@@ -58,14 +58,18 @@ export function sessionFromRequest(request: NextRequest): AdminSession | null {
   return verifySessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
 }
 
-export function sessionCookieOptions() {
+export function sessionCookieOptions(secure = false) {
   return {
     httpOnly: true,
     sameSite: "lax" as const,
-    secure: process.env.NODE_ENV === "production",
+    secure,
     path: "/",
     maxAge: Math.floor(SESSION_TTL_MS / 1000),
   };
+}
+
+export function isHttpsRequest(request: NextRequest): boolean {
+  return request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() === "https";
 }
 
 export function hashPassword(password: string): string {

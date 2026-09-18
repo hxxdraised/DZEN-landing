@@ -13,6 +13,7 @@ interface LeadButtonProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export function LeadButton({
@@ -21,6 +22,7 @@ export function LeadButton({
   variant = "default",
   size = "default",
   className,
+  children,
 }: LeadButtonProps) {
   const { open } = useLead();
 
@@ -32,7 +34,7 @@ export function LeadButton({
       className={className}
       onClick={() => open(source)}
     >
-      {label}
+      {children ?? label}
     </Button>
   );
 }

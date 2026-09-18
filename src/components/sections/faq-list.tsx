@@ -7,9 +7,9 @@ interface FaqListProps {
 export function FaqList({ data }: FaqListProps) {
   return (
     <section className="container mx-auto max-w-3xl px-4 py-24">
-      <h2 className="mb-12 text-center text-3xl font-bold tracking-tight sm:text-4xl">
+      <h1 className="mb-12 text-center font-display text-3xl font-semibold tracking-tight sm:text-4xl">
         Часто задаваемые вопросы
-      </h2>
+      </h1>
       <div className="space-y-6">
         {data.map((item) => (
           <div key={item.question} className="rounded-lg border p-6">

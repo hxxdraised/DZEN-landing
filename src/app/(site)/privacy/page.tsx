@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Политика конфиденциальности",
+  description:
+    "Политика конфиденциальности студии растяжки и йоги ДЗЕН: обработка персональных данных клиентов.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPage() {

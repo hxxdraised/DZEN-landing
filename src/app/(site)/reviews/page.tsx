@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Отзывы",
   description:
     "Подлинные отзывы гостей студии ДЗЕН из 2ГИС — реальные истории о занятиях йогой, растяжкой и пилатесом в Казани.",
+  alternates: {
+    canonical: "/reviews",
+  },
 };
 
 export default function ReviewsPage() {

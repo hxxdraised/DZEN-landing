@@ -4,7 +4,12 @@ import { aboutData } from "@/data/mock";
 import { getTeam } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "О нас",
+  title: "О студии",
+  description:
+    "Философия студии ДЗЕН: гармония через движение. Сертифицированные тренеры, мини-группы и комплексный подход к тренировкам в Казани.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export const revalidate = 3600;
@@ -25,7 +30,7 @@ export default async function AboutPage() {
           {aboutData.mission}
         </blockquote>
       </section>
-      <Team data={team} />
+      <Team data={team} headingLevel="h2" />
     </>
   );
 }

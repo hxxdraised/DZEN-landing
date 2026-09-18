@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Направления",
   description:
     "Направления студии ДЗЕН: растяжка, сила и тонус, йога и осознанность, танцевальные классы.",
+  alternates: {
+    canonical: "/directions",
+  },
 };
 
 export const revalidate = 3600;

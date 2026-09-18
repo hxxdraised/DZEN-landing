@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: "Расписание",
   description:
     "Актуальное расписание занятий студии ДЗЕН: растяжка, йога, пилатес, силовые и танцевальные направления.",
+  alternates: {
+    canonical: "/schedule",
+  },
 };
 
 const MONTHS_SHORT = [

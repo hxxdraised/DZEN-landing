@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["parochial-unconceded-gwyn.ngrok-free.dev"],
+  poweredByHeader: false,
   images: {
     unoptimized: true,
   },

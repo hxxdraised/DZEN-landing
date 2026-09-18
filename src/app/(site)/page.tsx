@@ -1,9 +1,25 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Hero } from "@/components/sections/hero";
 import { Features } from "@/components/sections/features";
 import { ReviewsSection } from "@/components/sections/reviews";
 import { heroData, featuresData, aboutData } from "@/data/mock";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "ДЗЕН — студия растяжки и йоги в Казани",
+  description:
+    "Студия растяжки, йоги и пилатеса в Казани: 14 направлений, единый абонемент на всё, сертифицированные тренеры. Пробное занятие — 450 ₽. Онлайн-расписание и запись.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "ДЗЕН — ваше пространство баланса в Казани",
+    description:
+      "Тонус, гибкость и гармония — в одной студии. 14 направлений, единый абонемент, пробное занятие 450 ₽.",
+    url: "/",
+  },
+};
 
 export default function HomePage() {
   return (

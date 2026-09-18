@@ -6,6 +6,7 @@ import type { TeamMemberContent } from "@/lib/content";
 
 interface TeamProps {
   data: TeamMemberContent[];
+  headingLevel?: "h1" | "h2";
 }
 
 function initials(name: string): string {
@@ -16,14 +17,15 @@ function initials(name: string): string {
     .join("");
 }
 
-export function Team({ data }: TeamProps) {
+export function Team({ data, headingLevel = "h1" }: TeamProps) {
   const [selected, setSelected] = useState<TeamMemberContent | null>(null);
+  const Heading = headingLevel;
 
   return (
     <section className="container mx-auto px-4 py-24">
-      <h2 className="text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+      <Heading className="text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl">
         Тренеры ДЗЕН
-      </h2>
+      </Heading>
       <p className="mx-auto mt-4 mb-12 max-w-2xl text-center text-muted-foreground">
         Наш коллектив — сертифицированные специалисты с практическим опытом и вниманием к технике
         и безопасности.

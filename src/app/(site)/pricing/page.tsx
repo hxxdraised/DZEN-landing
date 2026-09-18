@@ -4,9 +4,12 @@ import { formatPrice, getPricing } from "@/lib/content";
 import { benefitsData, studioRules } from "@/data/mock";
 
 export const metadata: Metadata = {
-  title: "Цены",
+  title: "Цены и абонементы",
   description:
-    "Абонементы студии ДЗЕН: пробные занятия, «Фокус» на 4 недели, гибкие абонементы, персональные и парные тренировки.",
+    "Абонементы студии ДЗЕН: пробные занятия, «Фокус» на 4 недели, гибкие абонементы с заморозкой, персональные и парные тренировки. Единый абонемент на все 14 направлений.",
+  alternates: {
+    canonical: "/pricing",
+  },
 };
 
 export const revalidate = 3600;

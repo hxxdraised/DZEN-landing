@@ -37,7 +37,9 @@ function toLines(value: unknown, max: number): string[] {
 }
 
 function validate(payload: PlanMember[]): string | null {
-  if (!Array.isArray(payload)) return "Некорректный список тренеров";
+  if (!Array.isArray(payload) || payload.length === 0) {
+    return "Нужен хотя бы один тренер в команде";
+  }
   if (payload.length > 30) return "Слишком много тренеров (максимум 30)";
   for (const member of payload) {
     const name = typeof member.name === "string" ? member.name.trim() : "";

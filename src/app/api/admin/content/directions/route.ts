@@ -150,6 +150,6 @@ export async function PUT(request: NextRequest) {
     client.release();
   }
 
-  revalidateTag(CONTENT_TAGS.directions);
+  revalidateTag(CONTENT_TAGS.directions, "max");
   return NextResponse.json({ ok: true });
 }

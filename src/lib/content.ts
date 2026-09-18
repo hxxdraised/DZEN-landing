@@ -341,6 +341,126 @@ export async function moveEntity(
   await query(`UPDATE ${table} SET sort_order = $1 WHERE id = $2`, [a.sortOrder, b.id]);
 }
 
+export interface AdminTeamMember {
+  id: number;
+  name: string;
+  role: string;
+  groupSpecializations: string[];
+  personalSpecializations: string[];
+  philosophy: string;
+  experience: string;
+  education: string[];
+  photoUrl: string | null;
+  visible: boolean;
+}
+
+export async function getTeamAdmin(): Promise<AdminTeamMember[]> {
+  await ensureTables();
+  const members = await query<{
+    id: string;
+    name: string;
+    role: string;
+    group_specializations: unknown;
+    personal_specializations: unknown;
+    philosophy: string;
+    experience: string;
+    education: unknown;
+    photo_url: string | null;
+    visible: boolean;
+  }>(
+    `SELECT id, name, role, group_specializations, personal_specializations,
+            philosophy, experience, education, photo_url, visible
+     FROM team_members ORDER BY sort_order, id`
+  );
+
+  return members.rows.map((m) => ({
+    id: Number(m.id),
+    name: m.name,
+    role: m.role,
+    groupSpecializations: toStringArray(m.group_specializations),
+    personalSpecializations: toStringArray(m.personal_specializations),
+    philosophy: m.philosophy,
+    experience: m.experience,
+    education: toStringArray(m.education),
+    photoUrl: m.photo_url,
+    visible: m.visible,
+  }));
+}
+
+export interface AdminPricingPlan {
+  id: number;
+  name: string;
+  label: string | null;
+  details: string | null;
+  audience: string | null;
+  duration: string | null;
+  fullPrice: number;
+  discountPrice: number | null;
+  ctaText: string;
+  visible: boolean;
+}
+
+export interface AdminPricingBlock {
+  id: number;
+  title: string;
+  subtitle: string | null;
+  note: string | null;
+  visible: boolean;
+  plans: AdminPricingPlan[];
+}
+
+export async function getPricingAdmin(): Promise<AdminPricingBlock[]> {
+  await ensureTables();
+  const blocks = await query<{
+    id: string;
+    title: string;
+    subtitle: string | null;
+    note: string | null;
+    visible: boolean;
+  }>(
+    "SELECT id, title, subtitle, note, visible FROM pricing_blocks ORDER BY sort_order, id"
+  );
+  const plans = await query<{
+    id: string;
+    block_id: string;
+    name: string;
+    label: string | null;
+    details: string | null;
+    audience: string | null;
+    duration: string | null;
+    full_price: number;
+    discount_price: number | null;
+    cta_text: string;
+    visible: boolean;
+  }>(
+    `SELECT id, block_id, name, label, details, audience, duration,
+            full_price, discount_price, cta_text, visible
+     FROM pricing_plans ORDER BY sort_order, id`
+  );
+
+  return blocks.rows.map((b) => ({
+    id: Number(b.id),
+    title: b.title,
+    subtitle: b.subtitle,
+    note: b.note,
+    visible: b.visible,
+    plans: plans.rows
+      .filter((p) => p.block_id === b.id)
+      .map((p) => ({
+        id: Number(p.id),
+        name: p.name,
+        label: p.label,
+        details: p.details,
+        audience: p.audience,
+        duration: p.duration,
+        fullPrice: p.full_price,
+        discountPrice: p.discount_price,
+        ctaText: p.cta_text,
+        visible: p.visible,
+      })),
+  }));
+}
+
 export function formatPrice(value: number): string {
   return `${new Intl.NumberFormat("ru-RU").format(value)} ₽`;
 }

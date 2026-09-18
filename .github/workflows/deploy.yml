@@ -1,45 +1,80 @@
-name: Deploy to GitHub Pages
+name: Deploy
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
-  group: "pages"
+  group: production
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - name: Add .nojekyll
-        run: touch out/.nojekyll
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: out
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_YANDEX_METRICA_ID: ${{ vars.NEXT_PUBLIC_YANDEX_METRICA_ID }}
+
+      - name: Stage release
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+          cp deploy/ecosystem.config.cjs .next/standalone/ecosystem.config.cjs
+          tar -czf release.tar.gz -C .next/standalone .
+
+      - name: Upload release
+        uses: appleboy/scp-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: release.tar.gz
+          target: /opt/dzen/releases
+
+      - name: Activate release
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+            RELEASE_DIR="/opt/dzen/releases/${{ github.sha }}"
+            mkdir -p "$RELEASE_DIR"
+            tar -xzf /opt/dzen/releases/release.tar.gz -C "$RELEASE_DIR"
+            rm -f /opt/dzen/releases/release.tar.gz
+            ln -sfn "$RELEASE_DIR" /opt/dzen/current
+            pm2 startOrReload /opt/dzen/current/ecosystem.config.cjs --update-env
+            sleep 5
+            if ! curl -sf http://127.0.0.1:3000/ > /dev/null; then
+              pm2 logs dzen --lines 30 --nostream || true
+              echo "Healthcheck failed"
+              exit 1
+            fi
+            ls -1dt /opt/dzen/releases/*/ | tail -n +6 | xargs -r rm -rf
+            echo "Deploy OK: ${{ github.sha }}"

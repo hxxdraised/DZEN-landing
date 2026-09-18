@@ -173,7 +173,7 @@ export function TeamEditor({ initial }: TeamEditorProps) {
           </Button>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid items-start gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {draft.map((member, index) => (
             <div
               key={member.id}

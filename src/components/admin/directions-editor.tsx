@@ -281,7 +281,7 @@ export function DirectionsEditor({ initial }: DirectionsEditorProps) {
                 </div>
               </div>
 
-              <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 {category.directions.map((direction, dirIndex) => (
                   <article
                     key={direction.id}

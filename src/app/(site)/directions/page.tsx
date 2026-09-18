@@ -27,7 +27,7 @@ export default async function DirectionsPage() {
         {categories.map((category) => (
           <section key={category.id}>
             <h2 className="mb-5 font-display text-2xl font-semibold">{category.title}</h2>
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               {category.directions.map((direction) => (
                 <article key={direction.id} className="overflow-hidden rounded-xl border bg-card">
                   {direction.photoUrl && (

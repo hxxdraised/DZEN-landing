@@ -24,7 +24,7 @@ export function Team({ data }: TeamProps) {
       <h2 className="mb-12 text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl">
         Тренеры ДЗЕН
       </h2>
-      <div className="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {data.map((member) => (
           <TeamCard key={member.id} member={member} onOpen={() => setSelected(member)} />
         ))}

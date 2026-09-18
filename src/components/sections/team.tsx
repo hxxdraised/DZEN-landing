@@ -21,10 +21,14 @@ export function Team({ data }: TeamProps) {
 
   return (
     <section className="container mx-auto px-4 py-24">
-      <h2 className="mb-12 text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+      <h2 className="text-center font-display text-4xl font-semibold tracking-tight sm:text-5xl">
         Тренеры ДЗЕН
       </h2>
-      <div className="grid items-start gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <p className="mx-auto mt-4 mb-12 max-w-2xl text-center text-muted-foreground">
+        Наш коллектив — сертифицированные специалисты с практическим опытом и вниманием к технике
+        и безопасности.
+      </p>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {data.map((member) => (
           <TeamCard key={member.id} member={member} onOpen={() => setSelected(member)} />
         ))}
@@ -44,7 +48,7 @@ function TeamCard({
 }) {
   return (
     <article
-      className="group cursor-pointer overflow-hidden rounded-2xl border bg-card transition-colors hover:border-primary/40"
+      className="group flex cursor-pointer select-none flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40"
       onClick={onOpen}
     >
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted/40">
@@ -64,13 +68,17 @@ function TeamCard({
             </span>
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/45 to-transparent px-4 pb-3 pt-14">
-          <h3 className="text-base font-semibold leading-snug text-foreground">{member.name}</h3>
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[#ede8e4]/25 transition-opacity duration-500 group-hover:opacity-0"
+        />
+        <div className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] rounded-full bg-card/95 px-4 py-2.5 shadow-md backdrop-blur-sm">
+          <h3 className="font-display text-lg font-semibold leading-snug text-foreground">{member.name}</h3>
           <p className="mt-0.5 text-xs font-medium text-muted-foreground">{member.role}</p>
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="flex-1 p-4">
         <div className="flex flex-wrap gap-1.5">
           {member.groupSpecializations.map((item) => (
             <span

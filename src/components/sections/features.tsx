@@ -34,7 +34,7 @@ export function Features({ data }: FeaturesProps) {
         transition={{ duration: 0.5 }}
         className="mb-14 text-center font-display text-3xl font-light tracking-tight sm:text-4xl"
       >
-        Почему DZEN?
+        Почему ДЗЕН?
       </motion.h2>
 
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

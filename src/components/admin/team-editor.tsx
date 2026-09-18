@@ -250,7 +250,7 @@ export function TeamEditor({ initial }: TeamEditorProps) {
                   </EditorIconButton>
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/45 to-transparent px-3 pb-3 pt-14">
+                <div className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] rounded-xl bg-card/95 px-3 py-2 shadow-md backdrop-blur-sm">
                   <h4 className="text-sm font-semibold leading-snug text-foreground">{member.name}</h4>
                   <p className="mt-0.5 text-xs font-medium text-muted-foreground">{member.role}</p>
                 </div>

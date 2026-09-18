@@ -346,9 +346,9 @@ export function DirectionsEditor({ initial }: DirectionsEditorProps) {
                         className="absolute right-2 top-2 z-10 flex gap-0.5 rounded-full bg-background/85 p-0.5 opacity-0 backdrop-blur transition-opacity group-hover:opacity-100"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {iconButton(
-                          direction.visible ? "Скрыть" : "Показать",
-                          () =>
+                        <IconButton
+                          label={direction.visible ? "Скрыть" : "Показать"}
+                          onClick={() =>
                             mutate((data) => {
                               const cat = data[catIndex];
                               cat.directions = cat.directions.map((d, i) =>
@@ -356,16 +356,20 @@ export function DirectionsEditor({ initial }: DirectionsEditorProps) {
                               );
                               data[catIndex] = { ...cat };
                               return data;
-                            }),
-                          direction.visible ? <EyeIcon className="size-4" /> : <EyeOffIcon className="size-4" />
-                        )}
-                        {iconButton("Удалить", () => removeDirection(catIndex, dirIndex), <Trash2Icon className="size-4" />, true)}
+                            })
+                          }
+                        >
+                          {direction.visible ? <EyeIcon className="size-4" /> : <EyeOffIcon className="size-4" />}
+                        </IconButton>
+                        <IconButton label="Удалить" danger onClick={() => removeDirection(catIndex, dirIndex)}>
+                          <Trash2Icon className="size-4" />
+                        </IconButton>
                       </div>
                       <div
                         aria-hidden
-                        className="absolute inset-0 bg-[#ede8e4]/25 mix-blend-multiply"
+                        className="absolute inset-0 bg-[#ede8e4]/25 transition-opacity duration-500 group-hover:opacity-0"
                       />
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/45 to-transparent px-3 pb-3 pt-14">
+                      <div className="absolute bottom-3 left-3 max-w-[calc(100%-1.5rem)] rounded-full bg-card/95 px-4 py-2 shadow-md backdrop-blur-sm">
                         <h4 className="font-display text-base font-semibold leading-snug text-foreground">
                           {direction.title}
                         </h4>

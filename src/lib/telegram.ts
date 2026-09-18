@@ -36,13 +36,15 @@ export async function getTelegramConfig(): Promise<TelegramRuntimeConfig> {
   };
 }
 
+const TELEGRAM_API_BASE = process.env.TELEGRAM_API_BASE || "https://api.telegram.org";
+
 async function sendTelegramText(
   token: string,
   chatId: string,
   text: string,
   silent = false
 ): Promise<void> {
-  const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+  const response = await fetch(`${TELEGRAM_API_BASE}/bot${token}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

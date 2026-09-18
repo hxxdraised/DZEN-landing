@@ -15,6 +15,22 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: dzen
+          POSTGRES_PASSWORD: dzen_ci
+          POSTGRES_DB: dzen
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dzen -d dzen"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      CI_DATABASE_URL: postgres://dzen:dzen_ci@localhost:5432/dzen
     steps:
       - uses: actions/checkout@v4
 
@@ -34,9 +50,15 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Seed build database
+        run: node scripts/seed.mjs
+        env:
+          DATABASE_URL: ${{ env.CI_DATABASE_URL }}
+
       - name: Build
         run: pnpm build
         env:
+          DATABASE_URL: ${{ env.CI_DATABASE_URL }}
           NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
           NEXT_PUBLIC_YANDEX_METRICA_ID: ${{ vars.NEXT_PUBLIC_YANDEX_METRICA_ID }}
 

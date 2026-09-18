@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/footer";
 import { LeadProvider } from "@/components/lead/lead-provider";
 import { contactData, socialLinks } from "@/data/mock";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 function localBusinessJsonLd() {
   return {

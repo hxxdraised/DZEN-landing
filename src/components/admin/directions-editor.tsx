@@ -361,8 +361,12 @@ export function DirectionsEditor({ initial }: DirectionsEditorProps) {
                         )}
                         {iconButton("Удалить", () => removeDirection(catIndex, dirIndex), <Trash2Icon className="size-4" />, true)}
                       </div>
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent px-3 pb-3 pt-10">
-                        <h4 className="text-sm font-semibold leading-snug text-foreground">
+                      <div
+                        aria-hidden
+                        className="absolute inset-0 bg-[#ede8e4]/25 mix-blend-multiply"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/45 to-transparent px-3 pb-3 pt-14">
+                        <h4 className="font-display text-base font-semibold leading-snug text-foreground">
                           {direction.title}
                         </h4>
                       </div>

@@ -64,7 +64,7 @@ function TeamCard({
             </span>
           </div>
         )}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent px-4 pb-3 pt-10">
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/45 to-transparent px-4 pb-3 pt-14">
           <h3 className="text-base font-semibold leading-snug text-foreground">{member.name}</h3>
           <p className="mt-0.5 text-xs font-medium text-muted-foreground">{member.role}</p>
         </div>

@@ -1,22 +1,15 @@
-"use client";
-
-import { useState } from "react";
 import { ImageIcon } from "lucide-react";
-import { ModalShell } from "@/components/ui/modal-shell";
 import type { DirectionContent } from "@/lib/content";
 
 export function DirectionsCards({ directions }: { directions: DirectionContent[] }) {
-  const [selected, setSelected] = useState<DirectionContent | null>(null);
-
   return (
-    <>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {directions.map((direction) => (
-          <article
-            key={direction.id}
-            className="group relative aspect-[3/4] cursor-pointer overflow-hidden rounded-xl border bg-muted/40 transition-colors hover:border-primary/40"
-            onClick={() => setSelected(direction)}
-          >
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {directions.map((direction) => (
+        <article
+          key={direction.id}
+          className="group overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40"
+        >
+          <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted/40">
             {direction.photoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -31,34 +24,19 @@ export function DirectionsCards({ directions }: { directions: DirectionContent[]
                 <ImageIcon className="size-10" />
               </div>
             )}
-            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent px-4 pb-4 pt-12">
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent px-4 pb-3 pt-10">
               <h3 className="text-base font-semibold leading-snug text-foreground">
                 {direction.title}
               </h3>
-              <p className="mt-1 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
-                {direction.description}
-              </p>
             </div>
-          </article>
-        ))}
-      </div>
-
-      {selected && (
-        <ModalShell title={selected.title} onClose={() => setSelected(null)}>
-          {selected.photoUrl && (
-            <div className="aspect-[3/4] w-full max-w-60 overflow-hidden rounded-xl border border-dashed">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={selected.photoUrl}
-                alt={selected.title}
-                className="size-full object-cover"
-                draggable={false}
-              />
-            </div>
-          )}
-          <p className="text-sm leading-relaxed text-muted-foreground">{selected.description}</p>
-        </ModalShell>
-      )}
-    </>
+          </div>
+          <div className="p-4">
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {direction.description}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
   );
 }

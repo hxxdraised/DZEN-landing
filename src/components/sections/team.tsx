@@ -44,29 +44,51 @@ function TeamCard({
 }) {
   return (
     <article
-      className="group relative aspect-[3/4] cursor-pointer overflow-hidden rounded-2xl border bg-muted/40 transition-colors hover:border-primary/40"
+      className="group cursor-pointer overflow-hidden rounded-2xl border bg-card transition-colors hover:border-primary/40"
       onClick={onOpen}
     >
-      {member.photoUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={member.photoUrl}
-          alt={member.name}
-          className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-          draggable={false}
-        />
-      ) : (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="flex size-28 items-center justify-center rounded-full bg-muted text-3xl font-bold text-muted-foreground/60">
-            {initials(member.name)}
-          </span>
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted/40">
+        {member.photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={member.photoUrl}
+            alt={member.name}
+            className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            draggable={false}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="flex size-28 items-center justify-center rounded-full bg-muted text-3xl font-bold text-muted-foreground/60">
+              {initials(member.name)}
+            </span>
+          </div>
+        )}
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent px-4 pb-3 pt-10">
+          <h3 className="text-base font-semibold leading-snug text-foreground">{member.name}</h3>
+          <p className="mt-0.5 text-xs font-medium text-muted-foreground">{member.role}</p>
         </div>
-      )}
+      </div>
 
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white/95 via-white/70 to-transparent px-4 pb-4 pt-12">
-        <h3 className="text-base font-semibold leading-snug text-foreground">{member.name}</h3>
-        <p className="mt-0.5 text-xs font-medium text-muted-foreground">{member.role}</p>
+      <div className="p-4">
+        <div className="flex flex-wrap gap-1.5">
+          {member.groupSpecializations.map((item) => (
+            <span
+              key={`${member.id}-group-${item}`}
+              className="rounded-full bg-muted px-2.5 py-1 text-xs text-foreground"
+            >
+              {item}
+            </span>
+          ))}
+          {member.personalSpecializations.map((item) => (
+            <span
+              key={`${member.id}-personal-${item}`}
+              className="rounded-full bg-primary/10 px-2.5 py-1 text-xs text-primary"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
       </div>
     </article>
   );

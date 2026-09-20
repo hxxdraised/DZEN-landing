@@ -98,5 +98,15 @@ jobs:
               echo "Healthcheck failed"
               exit 1
             fi
+            REVALIDATE_SECRET=$(grep -E '^REVALIDATE_SECRET=' /opt/dzen/shared/.env.local | cut -d= -f2- | tr -d '\r')
+            if [ -n "$REVALIDATE_SECRET" ]; then
+              curl -sf -X POST -H "x-revalidate-secret: $REVALIDATE_SECRET" http://127.0.0.1:3000/api/revalidate > /dev/null
+              for path in / /directions /team /pricing; do
+                curl -sf -o /dev/null "http://127.0.0.1:3000$path" || echo "warn: failed to warm $path"
+              done
+              echo "ISR cache revalidated after deploy"
+            else
+              echo "warning: REVALIDATE_SECRET is not set in /opt/dzen/shared/.env.local — build-time prerender will be served until ISR revalidation"
+            fi
             ls -1dt /opt/dzen/releases/*/ | tail -n +6 | xargs -r rm -rf
             echo "Deploy OK: ${{ github.sha }}"
